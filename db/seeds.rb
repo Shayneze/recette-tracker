@@ -1,20 +1,16 @@
 # This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
 
-# 1. Create a user
+# 1. Clean the database 🗑️
+puts "Cleaning database..."
+Review.destroy_all
+Recipe.destroy_all
+User.destroy_all
+
+# 2. Create a user
 user = User.create!(
   email: "test@example.com",
   password: "password"
 )
-
-# 2. Clean the database 🗑️
-puts "Cleaning database..."
-Recipe.destroy_all
 
 # 3. Create the instances 🏗️
 puts "Creating recipes..."
@@ -55,3 +51,28 @@ Recipe.create!(
 
 # 4. Display a message 🎉
 puts "Finished! Created #{Recipe.count} recipes."
+
+# Création de quelques reviews
+user = User.first
+recipes = Recipe.all
+
+reviews_data = [
+  { rating: 5, comment: "Excellente recette, super facile à suivre !" },
+  { rating: 4, comment: "Très bon goût, mais j’ai dû ajuster les quantités." },
+  { rating: 3, comment: "C'était correct, un peu fade à mon goût." },
+  { rating: 5, comment: "Un vrai régal, je referai sans hésiter !" },
+  { rating: 2, comment: "Bof, je m’attendais à mieux." }
+]
+
+# Création de reviews
+recipes.each_with_index do |recipe, index|
+  Review.create!(
+    rating: reviews_data[index % reviews_data.length][:rating],
+    comment: reviews_data[index % reviews_data.length][:comment],
+    user: user,
+    recipe: recipe
+  )
+end
+
+# 4. Display a message 🎉
+puts "Finished! Created #{Review.count} reviews."
